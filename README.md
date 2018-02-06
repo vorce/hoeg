@@ -2,23 +2,40 @@
 
 Hoeg is a concatenative style programming language implemented in Elixir.
 
-Here's hello world:
+## Whyyyy
 
-    "hello world" print
+:)
 
 ## REPL
 
     Hoeg.REPL.start()
 
-## Built-in functions
+## Stuff you can do
 
 ### IO
 
-- `print`
+- `print`. Ex: `"hello world" print`
 
 ### Math
 
-`+, -, *, /, %`
+`+, -, *, /, %`. Ex:
+
+    14 8 + 2 * 2 -
+
+### Definitions
+
+Defines a new "function".
+
+    hoeg> foo: 1 2 +;
+    hoeg> foo
+    hoeg> 3
+
+## Ideas
+
+Just putting down some things I'd like to explore.
+
+- GenServers and Supervisors. How would this work? Maybe a good idea to first introduce something around Task.async.
+- Nice enough error messages. Need line numbers (and position), and explanation.
 
 ## Installation
 
