@@ -35,6 +35,14 @@ defmodule Hoeg do
     next(rest, env, [{:state, []} | acc])
   end
 
+  def next(["t", "r", "u", "e" | rest], env, acc) do
+    next(rest, env, [{:value, true} | acc])
+  end
+
+  def next(["f", "a", "l", "s", "e" | rest], env, acc) do
+    next(rest, env, [{:value, false} | acc])
+  end
+
   # def next(["e", "x", "e", "c" | rest], acc) do
   #   next(rest, [{:exec, []} | acc])
   # end
@@ -57,6 +65,34 @@ defmodule Hoeg do
 
   def next(["%" | rest], env, acc) do
     next(rest, env, [{:modulo, []} | acc])
+  end
+
+  def next(["o", "r" | rest], env, acc) do
+    next(rest, env, [{:boolean_or, []} | acc])
+  end
+
+  def next(["a", "n", "d" | rest], env, acc) do
+    next(rest, env, [{:boolean_and, []} | acc])
+  end
+
+  def next([">", "=" | rest], env, acc) do
+    next(rest, env, [{:greater_eq_to, []} | acc])
+  end
+
+  def next([">" | rest], env, acc) do
+    next(rest, env, [{:greater_than, []} | acc])
+  end
+
+  def next(["<", "=" | rest], env, acc) do
+    next(rest, env, [{:less_eq_to, []} | acc])
+  end
+
+  def next(["<" | rest], env, acc) do
+    next(rest, env, [{:less_than, []} | acc])
+  end
+
+  def next(["=", "=" | rest], env, acc) do
+    next(rest, env, [{:equals_to, []} | acc])
   end
 
   def next(["\n" | rest], env, acc) do

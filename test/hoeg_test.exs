@@ -27,6 +27,11 @@ defmodule HoegTest do
       program = "\"hello world\""
       assert Hoeg.eval(program) == %Hoeg.State{elements: ["hello world"]}
     end
+
+    test "puts boolean on the stack" do
+      program = "true false"
+      assert Hoeg.eval(program) == %Hoeg.State{elements: [false, true]}
+    end
   end
 
   describe "IO" do
@@ -123,6 +128,43 @@ defmodule HoegTest do
                elements: [7565, 2],
                environment: %{definition_name => "\n" <> body}
              }
+    end
+  end
+
+  describe "boolean" do
+    test "greater than" do
+      program = "1 3 >"
+      assert Hoeg.eval(program) == %Hoeg.State{elements: [false]}
+    end
+
+    test "greater than or equal to" do
+      program = "3 3 >="
+      assert Hoeg.eval(program) == %Hoeg.State{elements: [true]}
+    end
+
+    test "less than" do
+      program = "1 3 <"
+      assert Hoeg.eval(program) == %Hoeg.State{elements: [true]}
+    end
+
+    test "less than or equal to" do
+      program = "4 3 <="
+      assert Hoeg.eval(program) == %Hoeg.State{elements: [false]}
+    end
+
+    test "equals to" do
+      program = "42 42 =="
+      assert Hoeg.eval(program) == %Hoeg.State{elements: [true]}
+    end
+
+    test "or" do
+      program = "true false or"
+      assert Hoeg.eval(program) == %Hoeg.State{elements: [true]}
+    end
+
+    test "and" do
+      program = "true false and"
+      assert Hoeg.eval(program) == %Hoeg.State{elements: [false]}
     end
   end
 

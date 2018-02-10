@@ -15,7 +15,14 @@ defmodule Hoeg.REPL do
   end
 
   def print(%Hoeg.State{} = result) do
-    IO.inspect(List.first(result.elements) || [])
+    first = List.first(result.elements)
+
+    top_of_stack =
+      if first == nil,
+        do: [],
+        else: first
+
+    IO.inspect(top_of_stack)
     result
   end
 

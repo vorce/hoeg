@@ -78,4 +78,46 @@ defmodule Hoeg.Builtin do
   def exec(%Hoeg.State{} = state, _) do
     {:ok, {quotation, state2}} = Hoeg.State.pop(state)
   end
+
+  def greater_than(%Hoeg.State{} = state, _) do
+    {:ok, {v1, state2}} = Hoeg.State.pop(state)
+    {:ok, {v2, state3}} = Hoeg.State.pop(state2)
+    Hoeg.State.push(state3, v2 > v1)
+  end
+
+  def greater_eq_to(%Hoeg.State{} = state, _) do
+    {:ok, {v1, state2}} = Hoeg.State.pop(state)
+    {:ok, {v2, state3}} = Hoeg.State.pop(state2)
+    Hoeg.State.push(state3, v2 >= v1)
+  end
+
+  def less_than(%Hoeg.State{} = state, _) do
+    {:ok, {v1, state2}} = Hoeg.State.pop(state)
+    {:ok, {v2, state3}} = Hoeg.State.pop(state2)
+    Hoeg.State.push(state3, v2 < v1)
+  end
+
+  def less_eq_to(%Hoeg.State{} = state, _) do
+    {:ok, {v1, state2}} = Hoeg.State.pop(state)
+    {:ok, {v2, state3}} = Hoeg.State.pop(state2)
+    Hoeg.State.push(state3, v2 <= v1)
+  end
+
+  def equals_to(%Hoeg.State{} = state, _) do
+    {:ok, {v1, state2}} = Hoeg.State.pop(state)
+    {:ok, {v2, state3}} = Hoeg.State.pop(state2)
+    Hoeg.State.push(state3, v2 == v1)
+  end
+
+  def boolean_or(%Hoeg.State{} = state, _) do
+    {:ok, {v1, state2}} = Hoeg.State.pop(state)
+    {:ok, {v2, state3}} = Hoeg.State.pop(state2)
+    Hoeg.State.push(state3, v2 || v1)
+  end
+
+  def boolean_and(%Hoeg.State{} = state, _) do
+    {:ok, {v1, state2}} = Hoeg.State.pop(state)
+    {:ok, {v2, state3}} = Hoeg.State.pop(state2)
+    Hoeg.State.push(state3, v2 && v1)
+  end
 end

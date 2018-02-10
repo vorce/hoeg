@@ -8,6 +8,7 @@ Hoeg is a concatenative style programming language implemented in Elixir.
 
 ## REPL
 
+    iex -S mix
     Hoeg.REPL.start()
 
 ## Stuff you can do
@@ -21,6 +22,11 @@ Hoeg is a concatenative style programming language implemented in Elixir.
 `+, -, *, /, %`. Ex:
 
     14 8 + 2 * 2 -
+
+### Boolean logic
+
+- `or`. Ex: `true false or`
+- `and`. Ex: `true true and`
 
 ### Definitions
 
