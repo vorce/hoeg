@@ -37,6 +37,27 @@ defmodule HoegTest do
       program = "[1, 2, 3, 4]"
       assert Hoeg.eval(program) == %Hoeg.State{elements: [[1, 2, 3, 4]]}
     end
+
+    test "construct map" do
+      program = "%{1 => true, \"hello\" => \"hoeg!\"}"
+      assert Hoeg.eval(program) == %Hoeg.State{elements: [%{1 => true, "hello" => "hoeg!"}]}
+    end
+
+    test "construct map with string key containing map end char" do
+      program = """
+      %{"}" => 1}
+      """
+
+      assert Hoeg.eval(program) == %Hoeg.State{elements: [%{"}" => 1}]}
+    end
+
+    test "construct map with string value containing map end char" do
+      program = """
+      %{"foo" => "}"}
+      """
+
+      assert Hoeg.eval(program) == %Hoeg.State{elements: [%{"foo" => "}"}]}
+    end
   end
 
   describe "IO" do
@@ -232,6 +253,26 @@ defmodule HoegTest do
 
     test "built-in functions inside string is not evaluated" do
       assert Hoeg.next("\"hello + world\"", %{}, []) == {%{}, [value: "hello + world"]}
+    end
+
+    test "map with special key" do
+      assert Hoeg.next("%{\"}\" => 1}", %{}, []) == {%{}, [value: %{"}" => 1}]}
+    end
+
+    test "map with special value" do
+      assert Hoeg.next("%{1 => \"}\"}", %{}, []) == {%{}, [value: %{1 => "}"}]}
+    end
+  end
+
+  describe "until_quote" do
+    test "escaped string" do
+      string = "}\""
+      assert Hoeg.until_quote(String.graphemes(string), "") == {"}\"", []}
+    end
+
+    test "escaped string 2" do
+      string = "%{1 => \"}\"}"
+      assert Hoeg.until_quote(String.graphemes(string), "") == {"%{1 => \"", ["}", "\"", "}"]}
     end
   end
 end
