@@ -31,6 +31,8 @@ For bigger programs, check the [examples dir](examples).
 
 - `or`. Ex: `true false or`
 - `and`. Ex: `true true and`
+- `not`. Ex: `false not`
+- `>, >=, <, <=, ==, !=`
 
 ### Definitions
 

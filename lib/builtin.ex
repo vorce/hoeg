@@ -109,6 +109,12 @@ defmodule Hoeg.Builtin do
     Hoeg.State.push(state3, v2 == v1)
   end
 
+  def not_equal(%Hoeg.State{} = state, _) do
+    {:ok, {v1, state2}} = Hoeg.State.pop(state)
+    {:ok, {v2, state3}} = Hoeg.State.pop(state2)
+    Hoeg.State.push(state3, v2 != v1)
+  end
+
   def boolean_or(%Hoeg.State{} = state, _) do
     {:ok, {v1, state2}} = Hoeg.State.pop(state)
     {:ok, {v2, state3}} = Hoeg.State.pop(state2)
@@ -119,5 +125,10 @@ defmodule Hoeg.Builtin do
     {:ok, {v1, state2}} = Hoeg.State.pop(state)
     {:ok, {v2, state3}} = Hoeg.State.pop(state2)
     Hoeg.State.push(state3, v2 && v1)
+  end
+
+  def boolean_not(%Hoeg.State{} = state, _) do
+    {:ok, {v1, state2}} = Hoeg.State.pop(state)
+    Hoeg.State.push(state2, !v1)
   end
 end

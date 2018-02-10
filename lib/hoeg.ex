@@ -75,6 +75,10 @@ defmodule Hoeg do
     next(rest, env, [{:boolean_and, []} | acc])
   end
 
+  def next(["n", "o", "t" | rest], env, acc) do
+    next(rest, env, [{:boolean_not, []} | acc])
+  end
+
   def next([">", "=" | rest], env, acc) do
     next(rest, env, [{:greater_eq_to, []} | acc])
   end
@@ -93,6 +97,10 @@ defmodule Hoeg do
 
   def next(["=", "=" | rest], env, acc) do
     next(rest, env, [{:equals_to, []} | acc])
+  end
+
+  def next(["!", "=" | rest], env, acc) do
+    next(rest, env, [{:not_equal, []} | acc])
   end
 
   def next(["\n" | rest], env, acc) do

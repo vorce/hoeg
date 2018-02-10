@@ -166,6 +166,16 @@ defmodule HoegTest do
       program = "true false and"
       assert Hoeg.eval(program) == %Hoeg.State{elements: [false]}
     end
+
+    test "not" do
+      program = "false not"
+      assert Hoeg.eval(program) == %Hoeg.State{elements: [true]}
+    end
+
+    test "not equal" do
+      program = "true false !="
+      assert Hoeg.eval(program) == %Hoeg.State{elements: [true]}
+    end
   end
 
   describe "stack" do
