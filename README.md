@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/vorce/hoeg.svg?branch=master)](https://travis-ci.org/vorce/hoeg)
+
 # Hoeg
 
 Hoeg is a concatenative style programming language implemented in Elixir.
