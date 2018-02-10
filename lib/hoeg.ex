@@ -5,6 +5,7 @@ defmodule Hoeg do
 
   alias Hoeg.State
   alias Hoeg.Builtin
+  alias Hoeg.Error
 
   @whitespace ["\t", "\n", " "]
   @digits ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
@@ -35,17 +36,17 @@ defmodule Hoeg do
     next(rest, env, [{:state, []} | acc])
   end
 
-  def next(["t", "r", "u", "e" | rest], env, acc) do
-    next(rest, env, [{:value, true} | acc])
-  end
-
   def next(["f", "a", "l", "s", "e" | rest], env, acc) do
     next(rest, env, [{:value, false} | acc])
   end
 
-  # def next(["e", "x", "e", "c" | rest], acc) do
-  #   next(rest, [{:exec, []} | acc])
-  # end
+  def next(["t", "r", "u", "e" | rest], env, acc) do
+    next(rest, env, [{:value, true} | acc])
+  end
+
+  def next(["c", "o", "n", "s" | rest], env, acc) do
+    next(rest, env, [{:cons, []} | acc])
+  end
 
   def next(["+" | rest], env, acc) do
     next(rest, env, [{:add, []} | acc])
@@ -67,16 +68,16 @@ defmodule Hoeg do
     next(rest, env, [{:modulo, []} | acc])
   end
 
-  def next(["o", "r" | rest], env, acc) do
-    next(rest, env, [{:boolean_or, []} | acc])
-  end
-
   def next(["a", "n", "d" | rest], env, acc) do
     next(rest, env, [{:boolean_and, []} | acc])
   end
 
   def next(["n", "o", "t" | rest], env, acc) do
     next(rest, env, [{:boolean_not, []} | acc])
+  end
+
+  def next(["o", "r" | rest], env, acc) do
+    next(rest, env, [{:boolean_or, []} | acc])
   end
 
   def next([">", "=" | rest], env, acc) do
@@ -120,6 +121,12 @@ defmodule Hoeg do
           next(new_rest, env, [{:value, val} | acc])
         end
 
+      list_start?(ch) ->
+        with {elements, new_rest} <- until_list_end(rest, ""),
+             {:ok, val} <- Code.string_to_quoted(ch <> elements) do
+          next(new_rest, env, [{:value, val} | acc])
+        end
+
       quote?(ch) ->
         with {val, new_rest} <- until_quote(rest, ""),
              {:ok, val} <- Code.string_to_quoted(ch <> val) do
@@ -144,7 +151,7 @@ defmodule Hoeg do
         end
 
       true ->
-        raise("Parse error for: #{all}")
+        raise(Error.Parse, message: "Parse error for: #{all}")
     end
   end
 
@@ -165,6 +172,13 @@ defmodule Hoeg do
   def until_quote([], acc), do: {acc, []}
   def until_quote(["\"" | rest], acc), do: {acc <> "\"", rest}
   def until_quote([char | rest], acc), do: until_quote(rest, acc <> char)
+
+  def list_start?("["), do: true
+  def list_start?(_), do: false
+
+  def until_list_end([], acc), do: {acc, []}
+  def until_list_end(["]" | rest], acc), do: {acc <> "]", rest}
+  def until_list_end([char | rest], acc), do: until_list_end(rest, acc <> char)
 
   def whitespace?(d) when d in @whitespace, do: true
   def whitespace?(_), do: false

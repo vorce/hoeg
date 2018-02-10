@@ -32,6 +32,11 @@ defmodule HoegTest do
       program = "true false"
       assert Hoeg.eval(program) == %Hoeg.State{elements: [false, true]}
     end
+
+    test "list" do
+      program = "[1, 2, 3, 4]"
+      assert Hoeg.eval(program) == %Hoeg.State{elements: [[1, 2, 3, 4]]}
+    end
   end
 
   describe "IO" do
@@ -178,17 +183,29 @@ defmodule HoegTest do
     end
   end
 
+  describe "list operations" do
+    test "cons appends an item to a list" do
+      program = "1 [] cons"
+      assert Hoeg.eval(program) == %Hoeg.State{elements: [[1]]}
+    end
+
+    test "cons fails with non-list item at top of stack" do
+      program = "1 2 cons"
+      assert_raise(Hoeg.Error.Syntax, fn -> Hoeg.eval(program) end)
+    end
+  end
+
+  describe "match" do
+    test "pattern matching" do
+    end
+  end
+
   describe "stack" do
     # test "pop" do
     #   program = "1 pop"
     #   assert Hoeg.eval()
     # end
   end
-
-  # describe "exec" do
-  #   program = "[1 1 +] exec"
-  #   assert Hoeg.eval(program) == %Hoeg.State{elements: [2]}
-  # end
 
   describe "next/3" do
     test "digit" do

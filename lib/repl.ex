@@ -12,6 +12,10 @@ defmodule Hoeg.REPL do
 
   def eval(input, %Hoeg.State{} = state) do
     Hoeg.eval(input, state)
+  rescue
+    e in [Hoeg.Error.Syntax, Hoeg.Error.Parse] ->
+      IO.puts(IO.ANSI.format([:red, inspect(e)], true))
+      state
   end
 
   def print(%Hoeg.State{} = result) do

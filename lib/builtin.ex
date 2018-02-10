@@ -1,4 +1,6 @@
 defmodule Hoeg.Builtin do
+  alias Hoeg.Error
+
   def value(%Hoeg.State{} = state, val) do
     Hoeg.State.push(state, val)
   end
@@ -130,5 +132,21 @@ defmodule Hoeg.Builtin do
   def boolean_not(%Hoeg.State{} = state, _) do
     {:ok, {v1, state2}} = Hoeg.State.pop(state)
     Hoeg.State.push(state2, !v1)
+  end
+
+  def cons(%Hoeg.State{} = state, _) do
+    {:ok, {v1, state2}} = Hoeg.State.pop(state)
+
+    case v1 do
+      val when is_list(val) ->
+        {:ok, {v2, state3}} = Hoeg.State.pop(state2)
+        Hoeg.State.push(state3, [v2 | v1])
+
+      other ->
+        raise(
+          Error.Syntax,
+          message: "The top item on the stack needs to be a list for cons. Got #{other}"
+        )
+    end
   end
 end

@@ -7,7 +7,7 @@ Hoeg is a concatenative style programming language implemented in Elixir.
 ## What? and why?
 
 Concatenative Programming is a style/paradigm that uses function composition instead
-of function application. ["Why Concatenative Programming Matters"](https://evincarofautumn.blogspot.de/2012/02/why-concatenative-programming-matters.html) is a good article that explains the topic quite well.
+of function application. ["Why Concatenative Programming Matters"](https://evincarofautumn.blogspot.de/2012/02/why-concatenative-programming-matters.html) is a good article that explains the topic quite well. ["The Joy of Concatenative Languages"](http://www.codecommit.com/blog/cat/the-joy-of-concatenative-languages-part-1) blog post series is also nice.
 
 For me Hoeg is more of a fun learning experience.
 
@@ -45,12 +45,17 @@ Defines a new "function".
     hoeg> foo
     hoeg> 3
 
+### List operations
+
+- `cons`. Ex: `1 0 [] cons cons` will create a list `[1 0]` being left on the stack.
+
 ## Ideas
 
 Just putting down some things I'd like to explore.
 
 - GenServers and Supervisors. How would this work? Maybe a good idea to first introduce something around Task.async.
 - Nice enough error messages. Need line numbers (and position), and explanation.
+- Pattern matching...?
 
 ## Installation
 
