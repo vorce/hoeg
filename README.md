@@ -15,6 +15,8 @@ Hoeg is a concatenative style programming language implemented in Elixir.
 
 ## Stuff you can do
 
+For bigger programs, check the [examples dir](examples).
+
 ### IO
 
 - `print`. Ex: `"hello world" print`
