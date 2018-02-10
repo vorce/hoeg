@@ -4,9 +4,12 @@
 
 Hoeg is a concatenative style programming language implemented in Elixir.
 
-## Whyyyy
+## What? and why?
 
-:)
+Concatenative Programming is a style/paradigm that uses function composition instead
+of function application. ["Why Concatenative Programming Matters"](https://evincarofautumn.blogspot.de/2012/02/why-concatenative-programming-matters.html) is a good article that explains the topic quite well.
+
+For me Hoeg is more of a fun learning experience.
 
 ## REPL
 
