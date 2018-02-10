@@ -3,7 +3,7 @@ elixir:
   - 1.6
 sudo: false
 script:
-  - mix test
+  - mix coveralls
 notifications:
   recipients:
     - joel@vorce.se
