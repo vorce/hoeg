@@ -155,6 +155,21 @@ defmodule HoegTest do
                environment: %{definition_name => "\n" <> body}
              }
     end
+
+    test "nested" do
+      program = """
+      foo: 1 2 +;
+      bar:
+        foo
+        foo;
+      bar +
+      """
+
+      assert Hoeg.eval(program) == %Hoeg.State{
+               elements: [6],
+               environment: %{"bar" => "\n  foo\n  foo", "foo" => " 1 2 +"}
+             }
+    end
   end
 
   describe "boolean" do
@@ -221,58 +236,10 @@ defmodule HoegTest do
     end
   end
 
-  describe "stack" do
-    # test "pop" do
-    #   program = "1 pop"
-    #   assert Hoeg.eval()
-    # end
-  end
-
-  describe "next/3" do
-    test "digit" do
-      assert Hoeg.next("123", %{}, []) == {%{}, [value: 123]}
-    end
-
-    test "single word string" do
-      assert Hoeg.next("\"hoeg\"", %{}, []) == {%{}, [value: "hoeg"]}
-    end
-
-    test "multi word string" do
-      assert Hoeg.next("\"hoeg is great\"", %{}, []) == {%{}, [value: "hoeg is great"]}
-    end
-
-    test "multi word string and digits" do
-      assert Hoeg.next("\"hoeg is great\" 42", %{}, []) ==
-               {%{}, [value: "hoeg is great", value: 42]}
-    end
-
-    test "built-in function" do
-      assert Hoeg.next("\"hello world\" print", %{}, []) ==
-               {%{}, [value: "hello world", print: []]}
-    end
-
-    test "built-in functions inside string is not evaluated" do
-      assert Hoeg.next("\"hello + world\"", %{}, []) == {%{}, [value: "hello + world"]}
-    end
-
-    test "map with special key" do
-      assert Hoeg.next("%{\"}\" => 1}", %{}, []) == {%{}, [value: %{"}" => 1}]}
-    end
-
-    test "map with special value" do
-      assert Hoeg.next("%{1 => \"}\"}", %{}, []) == {%{}, [value: %{1 => "}"}]}
-    end
-  end
-
-  describe "until_quote" do
-    test "escaped string" do
-      string = "}\""
-      assert Hoeg.until_quote(String.graphemes(string), "") == {"}\"", []}
-    end
-
-    test "escaped string 2" do
-      string = "%{1 => \"}\"}"
-      assert Hoeg.until_quote(String.graphemes(string), "") == {"%{1 => \"", ["}", "\"", "}"]}
-    end
-  end
+  # describe "stack" do
+  #   test "pop" do
+  #     program = "1 pop"
+  #     assert Hoeg.eval(Hoeg.eval(program) == %Hoeg.State{elements: [[1]]})
+  #   end
+  # end
 end
