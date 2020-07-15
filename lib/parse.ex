@@ -1,4 +1,6 @@
 defmodule Hoeg.Parse do
+  alias Hoeg.Error
+
   @whitespace ["\t", "\n", " "]
   @digits ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
   @definition_re ~r/([a-z]+[a-zA-Z0-9]*):[\s\n]+/u

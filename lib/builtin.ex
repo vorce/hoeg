@@ -78,7 +78,7 @@ defmodule Hoeg.Builtin do
   end
 
   def exec(%Hoeg.State{} = state, _) do
-    {:ok, {quotation, state2}} = Hoeg.State.pop(state)
+    {:ok, {_quotation, _state2}} = Hoeg.State.pop(state)
   end
 
   def greater_than(%Hoeg.State{} = state, _) do

@@ -5,7 +5,6 @@ defmodule Hoeg do
 
   alias Hoeg.State
   alias Hoeg.Builtin
-  alias Hoeg.Error
   alias Hoeg.Parse
 
   def eval(program, state \\ %State{}) when is_binary(program) do
