@@ -4,6 +4,7 @@ defmodule Hoeg.ParseHelpers do
   """
   import NimbleParsec
 
+  # alias Hoeg.ParseDefinition
   alias Hoeg.ParseList
   alias Hoeg.ParseMap
 

@@ -229,4 +229,5 @@ defmodule Hoeg.Parse do
   defparsec(:value, ParseHelpers.value())
   defparsec(:list_value, ParseList.value())
   defparsec(:map_value, ParseMap.value())
+  # defparsec(:definition, ParseDefinition.value())
 end

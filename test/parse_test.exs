@@ -30,21 +30,6 @@ defmodule Hoeg.ParseTest do
       assert Parse.next("\"hello + world\"", %{}, []) == {%{}, [value: "hello + world"]}
     end
 
-    test "list values" do
-      assert {:ok, [[]], _, _, _, _} = Parse.list_value("[]")
-      assert {:ok, [1], _, _, _, _} = Parse.list_value("[1]")
-      assert {:ok, ["foo"], _, _, _, _} = Parse.list_value("[\"foo\"]")
-      assert {:ok, [1, 2, 3], _, _, _, _} = Parse.list_value("[1, 2, 3]")
-    end
-
-    test "map values" do
-      assert {:ok, [%{}], _, _, _, _} = Parse.map_value("%{}")
-      assert {:ok, [%{"foo" => 1}], _, _, _, _} = Parse.map_value("%{\"foo\" => 1}")
-
-      assert {:ok, [%{"foo" => 1, "fu" => 2}], _, _, _, _} =
-               Parse.map_value("%{\"foo\" => 1, \"fu\" => 2}")
-    end
-
     test "map with special key" do
       assert Parse.next("%{\"}\" => 1}", %{}, []) == {%{}, [value: %{"}" => 1}]}
     end
@@ -53,6 +38,37 @@ defmodule Hoeg.ParseTest do
       assert Parse.next("%{1 => \"}\"}", %{}, []) == {%{}, [value: %{1 => "}"}]}
     end
   end
+
+  test "list_value" do
+    assert {:ok, [[]], _, _, _, _} = Parse.list_value("[]")
+    assert {:ok, [1], _, _, _, _} = Parse.list_value("[1]")
+    assert {:ok, ["foo"], _, _, _, _} = Parse.list_value("[\"foo\"]")
+    assert {:ok, [1, 2, 3], _, _, _, _} = Parse.list_value("[1, 2, 3]")
+    assert {:ok, [[1, 2], %{1 => 2}], _, _, _, _} = Parse.list_value("[[1, 2], %{1 => 2}]")
+  end
+
+  test "map_value" do
+    assert {:ok, [%{}], _, _, _, _} = Parse.map_value("%{}")
+    assert {:ok, [%{"foo" => 1}], _, _, _, _} = Parse.map_value("%{\"foo\" => 1}")
+
+    assert {:ok, [%{"foo" => 1, "fu" => 2}], _, _, _, _} =
+             Parse.map_value("%{\"foo\" => 1, \"fu\" => 2}")
+
+    assert {:ok, [%{[1, 2] => %{3 => 4}}], _, _, _, _} = Parse.map_value("%{[1, 2] => %{3 => 4}}")
+  end
+
+  # test "definition" do
+  #   definition_name = "myname"
+
+  #   body = """
+  #     849 6716 +
+  #     "my name is Hoeg" print
+  #   """
+
+  #   definition = "#{definition_name}:\n#{body};"
+
+  #   assert Parse.definition(definition) == :ok
+  # end
 
   describe "until_quote" do
     test "escaped string" do
