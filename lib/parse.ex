@@ -1,5 +1,10 @@
 defmodule Hoeg.Parse do
+  import NimbleParsec
+
   alias Hoeg.Error
+  alias Hoeg.ParseHelpers
+  alias Hoeg.ParseList
+  alias Hoeg.ParseMap
 
   @whitespace ["\t", "\n", " "]
   @digits ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
@@ -8,9 +13,34 @@ defmodule Hoeg.Parse do
 
   def next(string, env, acc)
 
+  def next("", env, acc), do: {env, Enum.reverse(acc)}
+
   def next(string, env, acc) when is_binary(string) do
-    next(String.graphemes(string), env, acc)
+    case hoeg(string) do
+      {:ok, [value: [val]], rest, _context, _line, _column} ->
+        next(rest, env, [{:value, val} | acc])
+
+      {:ok, [value: [_h | _t] = list], rest, _context, _line, _column} ->
+        next(rest, env, [{:value, list} | acc])
+
+      {:ok, [{_operator, []} = op], rest, env, _line, _column} ->
+        next(rest, env, [op | acc])
+
+      {:ok, [], rest, _, _, _} ->
+        next(rest, env, acc)
+
+      {:ok, [{{:built_in, built_in_name}, []}], rest, _, _, _} ->
+        next(rest, env, [{built_in_name, []} | acc])
+
+      {:error, message, _rest, _context, line, column} ->
+        details = [message: message, line: line, column: column]
+        raise(Error.Parse, message: "Parse error: #{inspect(details)}")
+    end
   end
+
+  # def next(string, env, acc) when is_binary(string) do
+  #   next(String.graphemes(string), env, acc)
+  # end
 
   def next([], env, acc), do: {env, Enum.reverse(acc)}
 
@@ -194,4 +224,9 @@ defmodule Hoeg.Parse do
   def until_semicolon([], acc), do: {acc, []}
   def until_semicolon([";" | rest], acc), do: {acc, rest}
   def until_semicolon([char | rest], acc), do: until_semicolon(rest, acc <> char)
+
+  defparsec(:hoeg, ParseHelpers.hoeg())
+  defparsec(:value, ParseHelpers.value())
+  defparsec(:list_value, ParseList.value())
+  defparsec(:map_value, ParseMap.value())
 end

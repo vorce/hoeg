@@ -133,7 +133,7 @@ defmodule HoegTest do
         849 6716 +
       """
 
-      program = "#{definition_name}:\n#{body};\nmyname"
+      program = "#{definition_name}:\n#{body};\n#{definition_name}"
 
       assert Hoeg.eval(program) == %Hoeg.State{
                elements: [7565],
@@ -148,7 +148,7 @@ defmodule HoegTest do
         849 6716 +
       """
 
-      program = "2 #{definition_name}:\n#{body};\nmyname"
+      program = "2 #{definition_name}:\n#{body};\n#{definition_name}"
 
       assert Hoeg.eval(program) == %Hoeg.State{
                elements: [7565, 2],
@@ -168,6 +168,20 @@ defmodule HoegTest do
       assert Hoeg.eval(program) == %Hoeg.State{
                elements: [6],
                environment: %{"bar" => "\n  foo\n  foo", "foo" => " 1 2 +"}
+             }
+    end
+
+    test "pattern match" do
+      myfn = """
+        myfn []: 0;
+        myfn n: n;
+      """
+
+      program = "1 myfn"
+
+      assert Hoeg.eval(program) == %Hoeg.State{
+               elements: [1],
+               environment: %{"myfn" => "\n#{myfn}"}
              }
     end
   end

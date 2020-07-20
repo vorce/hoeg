@@ -23,11 +23,26 @@ defmodule Hoeg.ParseTest do
 
     test "built-in function" do
       assert Parse.next("\"hello world\" print", %{}, []) ==
-               {%{}, [value: "hello world", print: []]}
+               {%{}, [{:value, "hello world"}, {{:built_in, :print}, []}]}
     end
 
     test "built-in functions inside string is not evaluated" do
       assert Parse.next("\"hello + world\"", %{}, []) == {%{}, [value: "hello + world"]}
+    end
+
+    test "list values" do
+      assert {:ok, [[]], _, _, _, _} = Parse.list_value("[]")
+      assert {:ok, [1], _, _, _, _} = Parse.list_value("[1]")
+      assert {:ok, ["foo"], _, _, _, _} = Parse.list_value("[\"foo\"]")
+      assert {:ok, [1, 2, 3], _, _, _, _} = Parse.list_value("[1, 2, 3]")
+    end
+
+    test "map values" do
+      assert {:ok, [%{}], _, _, _, _} = Parse.map_value("%{}")
+      assert {:ok, [%{"foo" => 1}], _, _, _, _} = Parse.map_value("%{\"foo\" => 1}")
+
+      assert {:ok, [%{"foo" => 1, "fu" => 2}], _, _, _, _} =
+               Parse.map_value("%{\"foo\" => 1, \"fu\" => 2}")
     end
 
     test "map with special key" do
