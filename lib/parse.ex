@@ -12,8 +12,6 @@ defmodule Hoeg.Parse do
   @definition_re ~r/([a-z]+[a-zA-Z0-9]*):[\s\n]+/u
   @reference_re ~r/([a-z]+[\w]*)/u
 
-  @operators []
-
   def next(string, env, acc)
 
   def next("", env, acc), do: {env, Enum.reverse(acc)}
@@ -24,11 +22,12 @@ defmodule Hoeg.Parse do
         next(rest, env, [{:value, val} | acc])
 
       {:ok, [definition: [{:definition_name, name} | body]], rest, _context, _line, _column} ->
-        IO.inspect([name: name, body: body], label: "definition")
         next(rest, env, [{:definition, [name, body]} | acc])
 
+      {:ok, [reference: [ref]], rest, _context, _line, _column} ->
+        next(rest, env, [{:reference, ref} | acc])
+
       {:ok, [{name, []} = op], rest, env, _line, _column} when is_atom(name) ->
-        IO.inspect(op, label: "hitting general ok parse")
         next(rest, env, [op | acc])
 
       {:ok, [], rest, _, _, _} ->
@@ -235,4 +234,5 @@ defmodule Hoeg.Parse do
   defparsec(:list_value, ParseList.value())
   defparsec(:map_value, ParseMap.value())
   defparsec(:definition, ParseDefinition.value())
+  defparsec(:reference, ParseHelpers.reference())
 end

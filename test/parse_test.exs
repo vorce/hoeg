@@ -80,6 +80,12 @@ defmodule Hoeg.ParseTest do
             ], _, _, _, _} = Parse.definition(definition)
   end
 
+  test "reference" do
+    assert {:ok, [reference: ["bla"]], _, _, _, _} = Parse.reference(" bla ")
+    assert {:ok, [reference: ["bla"]], _, _, _, _} = Parse.reference("\nbla\n")
+    assert {:ok, [reference: ["bla"]], _, _, _, _} = Parse.reference("\nbla")
+  end
+
   describe "until_quote" do
     test "escaped string" do
       string = "}\""

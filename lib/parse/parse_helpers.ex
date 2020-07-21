@@ -9,7 +9,7 @@ defmodule Hoeg.ParseHelpers do
   alias Hoeg.ParseMap
 
   def hoeg() do
-    [whitespace(), value(), built_in_function(), operator(), ParseDefinition.value()]
+    [whitespace(), value(), built_in_function(), operator(), ParseDefinition.value(), reference()]
     |> choice()
     |> map({__MODULE__, :unwrap, []})
   end
@@ -83,5 +83,19 @@ defmodule Hoeg.ParseHelpers do
     |> ascii_char()
     |> ignore()
     |> tag(name)
+  end
+
+  def reference() do
+    end_marker = choice([whitespace(), eos()])
+
+    whitespace()
+    |> optional()
+    |> repeat(
+      lookahead_not(end_marker)
+      |> utf8_char([])
+    )
+    |> reduce({List, :to_string, []})
+    |> ignore(end_marker)
+    |> tag(:reference)
   end
 end

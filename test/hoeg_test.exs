@@ -154,9 +154,11 @@ defmodule HoegTest do
 
       program = "2 #{definition_name}:\n#{body};\n#{definition_name}"
 
+      {_env, parsed_definition_body} = Hoeg.Parse.next(body, %{}, [])
+
       assert Hoeg.eval(program) == %Hoeg.State{
                elements: [7565, 2],
-               environment: %{definition_name => "\n" <> body}
+               environment: %{definition_name => parsed_definition_body}
              }
     end
 
