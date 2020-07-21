@@ -1,14 +1,21 @@
 defmodule Hoeg.ParseDefinition do
-  @moduledoc false
+  @moduledoc """
+  A "definition" is basically a function or macro.
+  """
 
   import NimbleParsec
 
-  alias Hoeg.ParseHelpers
+  # alias Hoeg.ParseHelpers
 
   def value() do
     definition_name()
+    |> tag(:definition_name)
+    |> map({__MODULE__, :name_to_string, []})
     |> definition_body()
+    |> tag(:definition)
   end
+
+  def name_to_string({:definition_name, name}), do: {:definition_name, to_string(name)}
 
   defp definition_name() do
     end_of_name_marker = string(":\n")
@@ -24,6 +31,13 @@ defmodule Hoeg.ParseDefinition do
   end
 
   defp definition_body(combinator \\ empty()) do
+    end_of_body_marker = ascii_char([?;])
+
     combinator
+    |> repeat(
+      lookahead_not(end_of_body_marker)
+      |> parsec(:hoeg)
+    )
+    |> ignore(end_of_body_marker)
   end
 end

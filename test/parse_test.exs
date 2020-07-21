@@ -57,18 +57,28 @@ defmodule Hoeg.ParseTest do
     assert {:ok, [%{[1, 2] => %{3 => 4}}], _, _, _, _} = Parse.map_value("%{[1, 2] => %{3 => 4}}")
   end
 
-  # test "definition" do
-  #   definition_name = "myname"
+  test "definition" do
+    definition_name = "myname"
 
-  #   body = """
-  #     849 6716 +
-  #     "my name is Hoeg" print
-  #   """
+    body = """
+      849 6716 +
+      "my name is Hoeg" print
+    """
 
-  #   definition = "#{definition_name}:\n#{body};"
+    definition = "#{definition_name}:\n#{body};"
 
-  #   assert Parse.definition(definition) == :ok
-  # end
+    assert {:ok,
+            [
+              definition: [
+                {:definition_name, "myname"},
+                {:value, 849},
+                {:value, 6716},
+                {:add, []},
+                {:value, "my name is Hoeg"},
+                {{:built_in, :print}, []}
+              ]
+            ], _, _, _, _} = Parse.definition(definition)
+  end
 
   describe "until_quote" do
     test "escaped string" do

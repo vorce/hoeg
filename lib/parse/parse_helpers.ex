@@ -4,13 +4,14 @@ defmodule Hoeg.ParseHelpers do
   """
   import NimbleParsec
 
-  # alias Hoeg.ParseDefinition
+  alias Hoeg.ParseDefinition
   alias Hoeg.ParseList
   alias Hoeg.ParseMap
 
   def hoeg() do
-    [whitespace(), value(), built_in_function(), operator()]
+    [whitespace(), value(), built_in_function(), operator(), ParseDefinition.value()]
     |> choice()
+    |> map({__MODULE__, :unwrap, []})
   end
 
   def whitespace(combinator \\ empty()) do
@@ -23,6 +24,9 @@ defmodule Hoeg.ParseHelpers do
     |> choice()
     |> tag(:value)
   end
+
+  def unwrap({:value, [val]}), do: {:value, val}
+  def unwrap(val), do: val
 
   def number_value() do
     integer(min: 1)

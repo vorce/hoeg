@@ -2,6 +2,7 @@ defmodule Hoeg.Parse do
   import NimbleParsec
 
   alias Hoeg.Error
+  alias Hoeg.ParseDefinition
   alias Hoeg.ParseHelpers
   alias Hoeg.ParseList
   alias Hoeg.ParseMap
@@ -11,26 +12,30 @@ defmodule Hoeg.Parse do
   @definition_re ~r/([a-z]+[a-zA-Z0-9]*):[\s\n]+/u
   @reference_re ~r/([a-z]+[\w]*)/u
 
+  @operators []
+
   def next(string, env, acc)
 
   def next("", env, acc), do: {env, Enum.reverse(acc)}
 
   def next(string, env, acc) when is_binary(string) do
     case hoeg(string) do
-      {:ok, [value: [val]], rest, _context, _line, _column} ->
+      {:ok, [value: val], rest, _context, _line, _column} ->
         next(rest, env, [{:value, val} | acc])
 
-      {:ok, [value: [_h | _t] = list], rest, _context, _line, _column} ->
-        next(rest, env, [{:value, list} | acc])
+      {:ok, [definition: [{:definition_name, name} | body]], rest, _context, _line, _column} ->
+        IO.inspect([name: name, body: body], label: "definition")
+        next(rest, env, [{:definition, [name, body]} | acc])
 
-      {:ok, [{_operator, []} = op], rest, env, _line, _column} ->
+      {:ok, [{name, []} = op], rest, env, _line, _column} when is_atom(name) ->
+        IO.inspect(op, label: "hitting general ok parse")
         next(rest, env, [op | acc])
 
       {:ok, [], rest, _, _, _} ->
         next(rest, env, acc)
 
-      {:ok, [{{:built_in, built_in_name}, []}], rest, _, _, _} ->
-        next(rest, env, [{built_in_name, []} | acc])
+      {:ok, [{{:built_in, _name}, []} = bi], rest, _, _, _} ->
+        next(rest, env, [bi | acc])
 
       {:error, message, _rest, _context, line, column} ->
         details = [message: message, line: line, column: column]
@@ -229,5 +234,5 @@ defmodule Hoeg.Parse do
   defparsec(:value, ParseHelpers.value())
   defparsec(:list_value, ParseList.value())
   defparsec(:map_value, ParseMap.value())
-  # defparsec(:definition, ParseDefinition.value())
+  defparsec(:definition, ParseDefinition.value())
 end

@@ -9,9 +9,18 @@ defmodule Hoeg do
 
   def eval(program, state \\ %State{}) when is_binary(program) do
     {env, instructions} = Parse.next(program, state.environment, [])
+    run(instructions, env, state)
+  end
 
+  def run(instructions, env, state) do
     Enum.reduce(instructions, %State{state | environment: env}, fn {fn_name, args}, state ->
-      apply(Builtin, fn_name, [state, args])
+      case fn_name do
+        {:built_in, name} when is_atom(name) ->
+          apply(Builtin, name, [state, args])
+
+        name when is_atom(name) ->
+          apply(Builtin, name, [state, args])
+      end
     end)
   end
 
