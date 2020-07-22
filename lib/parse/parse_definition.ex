@@ -18,7 +18,7 @@ defmodule Hoeg.ParseDefinition do
   def name_to_string({:definition_name, name}), do: {:definition_name, to_string(name)}
 
   defp definition_name() do
-    end_of_name_marker = string(":\n")
+    end_of_name_marker = string(":") |> ascii_char([?\s, ?\t, ?\n]) |> ignore()
 
     repeat(
       lookahead_not(end_of_name_marker)

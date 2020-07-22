@@ -70,23 +70,24 @@ defmodule Hoeg.ParseHelpers do
 
   def operator() do
     choice([
-      op([?+], :add),
-      op([?-], :subtract),
-      op([?*], :multiply),
-      op([?/], :divide),
-      op([?%], :modulo)
+      op(ascii_char([?+]), :add),
+      op(ascii_char([?-]), :subtract),
+      op(ascii_char([?*]), :multiply),
+      op(ascii_char([?/]), :divide),
+      op(ascii_char([?%]), :modulo),
+      op(string(">="), :greater_eq_to),
+      op(ascii_char([?>]), :greater_than)
     ])
   end
 
-  defp op(char, name) when is_atom(name) do
-    char
-    |> ascii_char()
+  defp op(combinator, name) when is_atom(name) do
+    combinator
     |> ignore()
     |> tag(name)
   end
 
   def reference() do
-    end_marker = choice([whitespace(), eos()])
+    end_marker = choice([whitespace(), ascii_char([?;]), eos()])
 
     whitespace()
     |> optional()
@@ -95,7 +96,7 @@ defmodule Hoeg.ParseHelpers do
       |> utf8_char([])
     )
     |> reduce({List, :to_string, []})
-    |> ignore(end_marker)
-    |> tag(:reference)
+    |> ignore(optional(whitespace()))
+    |> unwrap_and_tag(:reference)
   end
 end

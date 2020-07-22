@@ -24,7 +24,7 @@ defmodule Hoeg.Parse do
       {:ok, [definition: [{:definition_name, name} | body]], rest, _context, _line, _column} ->
         next(rest, env, [{:definition, [name, body]} | acc])
 
-      {:ok, [reference: [ref]], rest, _context, _line, _column} ->
+      {:ok, [reference: ref], rest, _context, _line, _column} ->
         next(rest, env, [{:reference, ref} | acc])
 
       {:ok, [{name, []} = op], rest, env, _line, _column} when is_atom(name) ->

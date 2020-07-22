@@ -80,10 +80,18 @@ defmodule Hoeg.ParseTest do
             ], _, _, _, _} = Parse.definition(definition)
   end
 
+  test "one line definition" do
+    definition = "bla: 1 2 +;"
+
+    assert {:ok, [definition: [definition_name: "bla", value: 1, value: 2, add: []]], _, _, _, _} =
+             Parse.definition(definition)
+  end
+
   test "reference" do
     assert {:ok, [reference: ["bla"]], _, _, _, _} = Parse.reference(" bla ")
     assert {:ok, [reference: ["bla"]], _, _, _, _} = Parse.reference("\nbla\n")
     assert {:ok, [reference: ["bla"]], _, _, _, _} = Parse.reference("\nbla")
+    assert {:ok, [reference: ["bla"]], _, _, _, _} = Parse.reference("bla;")
   end
 
   describe "until_quote" do
