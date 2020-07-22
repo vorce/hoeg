@@ -8,7 +8,10 @@ defmodule Hoeg.ExampleTest do
 
     assert Hoeg.eval(program) == %Hoeg.State{
              elements: [304.5],
-             environment: %{"dec" => "\n  1 -", "inc" => "\n  1 +"}
+             environment: %{
+               "dec" => [value: 1, subtract: []],
+               "inc" => [value: 1, add: []]
+             }
            }
   end
 

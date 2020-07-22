@@ -7,11 +7,26 @@ defmodule Hoeg do
   alias Hoeg.Builtin
   alias Hoeg.Parse
 
+  @doc """
+  Evaluate a Hoeg program string
+  """
   def eval(program, state \\ %State{}) when is_binary(program) do
     {env, instructions} = Parse.next(program, state.environment, [])
+    run(instructions, env, state)
+  end
 
+  @doc """
+  Run hoeg instructions with an environment and state
+  """
+  def run(instructions, env, state) do
     Enum.reduce(instructions, %State{state | environment: env}, fn {fn_name, args}, state ->
-      apply(Builtin, fn_name, [state, args])
+      case fn_name do
+        {:built_in, name} when is_atom(name) ->
+          apply(Builtin, name, [state, args])
+
+        name when is_atom(name) ->
+          apply(Builtin, name, [state, args])
+      end
     end)
   end
 

@@ -65,7 +65,7 @@ by adding `hoeg` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:hoeg, "~> 0.1.0"}
+    {:hoeg, "~> 0.2.0"}
   ]
 end
 ```

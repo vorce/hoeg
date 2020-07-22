@@ -23,7 +23,7 @@ defmodule Hoeg.ParseTest do
 
     test "built-in function" do
       assert Parse.next("\"hello world\" print", %{}, []) ==
-               {%{}, [value: "hello world", print: []]}
+               {%{}, [{:value, "hello world"}, {{:built_in, :print}, []}]}
     end
 
     test "built-in functions inside string is not evaluated" do
@@ -39,15 +39,58 @@ defmodule Hoeg.ParseTest do
     end
   end
 
-  describe "until_quote" do
-    test "escaped string" do
-      string = "}\""
-      assert Parse.until_quote(String.graphemes(string), "") == {"}\"", []}
-    end
+  test "list_value" do
+    assert {:ok, [[]], _, _, _, _} = Parse.list_value("[]")
+    assert {:ok, [1], _, _, _, _} = Parse.list_value("[1]")
+    assert {:ok, ["foo"], _, _, _, _} = Parse.list_value("[\"foo\"]")
+    assert {:ok, [1, 2, 3], _, _, _, _} = Parse.list_value("[1, 2, 3]")
+    assert {:ok, [[1, 2], %{1 => 2}], _, _, _, _} = Parse.list_value("[[1, 2], %{1 => 2}]")
+  end
 
-    test "escaped string 2" do
-      string = "%{1 => \"}\"}"
-      assert Parse.until_quote(String.graphemes(string), "") == {"%{1 => \"", ["}", "\"", "}"]}
-    end
+  test "map_value" do
+    assert {:ok, [%{}], _, _, _, _} = Parse.map_value("%{}")
+    assert {:ok, [%{"foo" => 1}], _, _, _, _} = Parse.map_value("%{\"foo\" => 1}")
+
+    assert {:ok, [%{"foo" => 1, "fu" => 2}], _, _, _, _} =
+             Parse.map_value("%{\"foo\" => 1, \"fu\" => 2}")
+
+    assert {:ok, [%{[1, 2] => %{3 => 4}}], _, _, _, _} = Parse.map_value("%{[1, 2] => %{3 => 4}}")
+  end
+
+  test "definition" do
+    definition_name = "myname"
+
+    body = """
+      849 6716 +
+      "my name is Hoeg" print
+    """
+
+    definition = "#{definition_name}:\n#{body};"
+
+    assert {:ok,
+            [
+              definition: [
+                {:definition_name, "myname"},
+                {:value, 849},
+                {:value, 6716},
+                {:add, []},
+                {:value, "my name is Hoeg"},
+                {{:built_in, :print}, []}
+              ]
+            ], _, _, _, _} = Parse.definition(definition)
+  end
+
+  test "one line definition" do
+    definition = "bla: 1 2 +;"
+
+    assert {:ok, [definition: [definition_name: "bla", value: 1, value: 2, add: []]], _, _, _, _} =
+             Parse.definition(definition)
+  end
+
+  test "reference" do
+    assert {:ok, [reference: "bla"], _, _, _, _} = Parse.reference("\nbla\n")
+    assert {:ok, [reference: "bla"], _, _, _, _} = Parse.reference(" bla ")
+    assert {:ok, [reference: "bla"], _, _, _, _} = Parse.reference("\nbla")
+    assert {:ok, [reference: "bla"], _, _, _, _} = Parse.reference("bla;")
   end
 end

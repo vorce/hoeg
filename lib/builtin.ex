@@ -12,7 +12,7 @@ defmodule Hoeg.Builtin do
   def reference(%Hoeg.State{environment: env} = state, name) do
     unless Map.has_key?(env, name), do: raise("Undefined reference: #{name}")
     body = Map.get(env, name)
-    new_state = Hoeg.eval(body, state)
+    new_state = Hoeg.run(body, env, state)
 
     %Hoeg.State{
       state

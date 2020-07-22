@@ -121,8 +121,10 @@ defmodule HoegTest do
 
       program = "#{definition_name}:\n#{body};"
 
+      {_env, parsed_definition_body} = Hoeg.Parse.next(body, %{}, [])
+
       assert Hoeg.eval(program) == %Hoeg.State{
-               environment: %{definition_name => "\n" <> body}
+               environment: %{definition_name => parsed_definition_body}
              }
     end
 
@@ -133,11 +135,13 @@ defmodule HoegTest do
         849 6716 +
       """
 
-      program = "#{definition_name}:\n#{body};\nmyname"
+      program = "#{definition_name}:\n#{body};\n#{definition_name}"
+
+      {_env, parsed_definition_body} = Hoeg.Parse.next(body, %{}, [])
 
       assert Hoeg.eval(program) == %Hoeg.State{
                elements: [7565],
-               environment: %{definition_name => "\n" <> body}
+               environment: %{definition_name => parsed_definition_body}
              }
     end
 
@@ -148,11 +152,13 @@ defmodule HoegTest do
         849 6716 +
       """
 
-      program = "2 #{definition_name}:\n#{body};\nmyname"
+      program = "2 #{definition_name}:\n#{body};\n#{definition_name}"
+
+      {_env, parsed_definition_body} = Hoeg.Parse.next(body, %{}, [])
 
       assert Hoeg.eval(program) == %Hoeg.State{
                elements: [7565, 2],
-               environment: %{definition_name => "\n" <> body}
+               environment: %{definition_name => parsed_definition_body}
              }
     end
 
@@ -167,9 +173,26 @@ defmodule HoegTest do
 
       assert Hoeg.eval(program) == %Hoeg.State{
                elements: [6],
-               environment: %{"bar" => "\n  foo\n  foo", "foo" => " 1 2 +"}
+               environment: %{
+                 "bar" => [reference: "foo", reference: "foo"],
+                 "foo" => [value: 1, value: 2, add: []]
+               }
              }
     end
+
+    # test "pattern match" do
+    #   myfn = """
+    #     myfn []: 0;
+    #     myfn n: n;
+    #   """
+
+    #   program = "1 myfn"
+
+    #   assert Hoeg.eval(program) == %Hoeg.State{
+    #            elements: [1],
+    #            environment: %{"myfn" => "\n#{myfn}"}
+    #          }
+    # end
   end
 
   describe "boolean" do
