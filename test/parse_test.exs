@@ -88,10 +88,10 @@ defmodule Hoeg.ParseTest do
   end
 
   test "reference" do
-    assert {:ok, [reference: ["bla"]], _, _, _, _} = Parse.reference(" bla ")
-    assert {:ok, [reference: ["bla"]], _, _, _, _} = Parse.reference("\nbla\n")
-    assert {:ok, [reference: ["bla"]], _, _, _, _} = Parse.reference("\nbla")
-    assert {:ok, [reference: ["bla"]], _, _, _, _} = Parse.reference("bla;")
+    assert {:ok, [reference: "bla"], _, _, _, _} = Parse.reference("\nbla\n")
+    assert {:ok, [reference: "bla"], _, _, _, _} = Parse.reference(" bla ")
+    assert {:ok, [reference: "bla"], _, _, _, _} = Parse.reference("\nbla")
+    assert {:ok, [reference: "bla"], _, _, _, _} = Parse.reference("bla;")
   end
 
   describe "until_quote" do

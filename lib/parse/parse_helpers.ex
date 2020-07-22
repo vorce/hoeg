@@ -57,7 +57,7 @@ defmodule Hoeg.ParseHelpers do
   def string_to_bool("false"), do: false
 
   def built_in_function() do
-    choice([built_in(:print), built_in(:state)])
+    choice([built_in(:print), built_in(:state), built_in(:cons)])
   end
 
   defp built_in(name) when is_atom(name) do
@@ -75,6 +75,13 @@ defmodule Hoeg.ParseHelpers do
       op(ascii_char([?*]), :multiply),
       op(ascii_char([?/]), :divide),
       op(ascii_char([?%]), :modulo),
+      op(string("or"), :boolean_or),
+      op(string("and"), :boolean_and),
+      op(string("not"), :boolean_not),
+      op(string("=="), :equals_to),
+      op(string("!="), :not_equal),
+      op(string("<="), :less_eq_to),
+      op(ascii_char([?<]), :less_than),
       op(string(">="), :greater_eq_to),
       op(ascii_char([?>]), :greater_than)
     ])
