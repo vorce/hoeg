@@ -93,16 +93,4 @@ defmodule Hoeg.ParseTest do
     assert {:ok, [reference: "bla"], _, _, _, _} = Parse.reference("\nbla")
     assert {:ok, [reference: "bla"], _, _, _, _} = Parse.reference("bla;")
   end
-
-  describe "until_quote" do
-    test "escaped string" do
-      string = "}\""
-      assert Parse.until_quote(String.graphemes(string), "") == {"}\"", []}
-    end
-
-    test "escaped string 2" do
-      string = "%{1 => \"}\"}"
-      assert Parse.until_quote(String.graphemes(string), "") == {"%{1 => \"", ["}", "\"", "}"]}
-    end
-  end
 end
