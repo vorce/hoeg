@@ -87,6 +87,28 @@ defmodule Hoeg.ParseTest do
              Parse.definition(definition)
   end
 
+  test "definition with one argument" do
+    definition_name = "onearg"
+    definition_arg = "arg"
+    definition_signature = "#{definition_name} #{definition_arg}"
+    definition = "#{definition_signature}:\n#{definition_arg};"
+
+    assert {
+             :ok,
+             [
+               definition: [
+                 {:definition_name, definition_name},
+                 {:definition_arg, definition_arg},
+                 {:reference, definition_arg}
+               ]
+             ],
+             _,
+             _,
+             _,
+             _
+           } = Parse.definition(definition)
+  end
+
   test "reference" do
     assert {:ok, [reference: "bla"], _, _, _, _} = Parse.reference("\nbla\n")
     assert {:ok, [reference: "bla"], _, _, _, _} = Parse.reference(" bla ")

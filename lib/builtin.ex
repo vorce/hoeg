@@ -9,6 +9,27 @@ defmodule Hoeg.Builtin do
     %Hoeg.State{state | environment: Map.put(env, name, body)}
   end
 
+  # How should function/definition arguments work? :D
+  #
+  # Examples:
+  # myfn 1: "foo";
+  # Running myfn with anything besides a 1 on top of the stack will raise a match error.
+  # If a 1 is on the top of the stack "foo" will be placed on top of the stack.
+  #
+  # myfn 0: 1;
+  # myfn n: n;
+  #
+  # Implementation:
+  # One idea is to change how definitions are handled. Instead of having "defintion_name" => definition_body
+  # in the env. We instead put "definition_name" => %{state: %Hoeg.State{}, body: definition_body}
+  # That would enable definition_arg to manipulate the env of the state of the definition instead of the global
+  # namespace.
+  # We would also need to change how definition name+args are parsed, because we need the name of the definition
+  # together with the argument name. Maybe something like: `{:definition_sig, [name, arg1, arg2]}`
+  # def definition_arg(%Hoeg.State{environment: env} = state, arg) do
+  #   %Hoeg.State{state | environment: Map.put(env, arg, body)}
+  # end
+
   def reference(%Hoeg.State{environment: env} = state, name) do
     unless Map.has_key?(env, name), do: raise("Undefined reference: #{name}")
     body = Map.get(env, name)

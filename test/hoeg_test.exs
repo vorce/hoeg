@@ -180,19 +180,22 @@ defmodule HoegTest do
              }
     end
 
-    # test "pattern match" do
-    #   myfn = """
-    #     myfn []: 0;
-    #     myfn n: n;
-    #   """
+    test "pattern match" do
+      myfn = """
+        myfn []: 0;
+        myfn n: n;
+      """
 
-    #   program = "1 myfn"
+      program = "#{myfn}\n1 myfn"
 
-    #   assert Hoeg.eval(program) == %Hoeg.State{
-    #            elements: [1],
-    #            environment: %{"myfn" => "\n#{myfn}"}
-    #          }
-    # end
+      assert Hoeg.eval(program) == %Hoeg.State{
+               elements: [1],
+               environment: %{
+                 {"myfn", {:value, []}} => {:value, 0},
+                 {"myfn", [:_]} => {:reference, "pm_arg1"}
+               }
+             }
+    end
   end
 
   describe "boolean" do
