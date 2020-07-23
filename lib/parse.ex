@@ -39,10 +39,10 @@ defmodule Hoeg.Parse do
 
   def next([], env, acc), do: {env, Enum.reverse(acc)}
 
-  defparsec(:hoeg, ParseHelpers.hoeg())
+  defparsec(:hoeg, ParseHelpers.combinator())
   defparsec(:value, ParseHelpers.value())
-  defparsec(:list_value, ParseList.value())
-  defparsec(:map_value, ParseMap.value())
-  defparsec(:definition, ParseDefinition.value())
+  defparsec(:list_value, ParseList.combinator())
+  defparsec(:map_value, ParseMap.combinator())
+  defparsec(:definition, ParseDefinition.combinator())
   defparsec(:reference, ParseHelpers.reference())
 end

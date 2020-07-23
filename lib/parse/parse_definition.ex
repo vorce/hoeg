@@ -5,9 +5,10 @@ defmodule Hoeg.ParseDefinition do
 
   import NimbleParsec
 
-  # alias Hoeg.ParseHelpers
+  @behaviour Hoeg.ParseCombinator
 
-  def value() do
+  @impl true
+  def combinator(_opts \\ []) do
     definition_name()
     |> tag(:definition_name)
     |> map({__MODULE__, :name_to_string, []})

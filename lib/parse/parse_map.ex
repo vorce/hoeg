@@ -6,11 +6,14 @@ defmodule Hoeg.ParseMap do
 
   alias Hoeg.ParseHelpers
 
+  @behaviour Hoeg.ParseCombinator
+
   @map_start_marker string("%{")
   @map_end_marker ascii_char([?}])
   @map_divider string(" => ")
 
-  def value() do
+  @impl true
+  def combinator(_opts \\ []) do
     [
       empty_map_value(),
       single_entry_map_value(),

@@ -8,8 +8,18 @@ defmodule Hoeg.ParseHelpers do
   alias Hoeg.ParseList
   alias Hoeg.ParseMap
 
-  def hoeg() do
-    [whitespace(), value(), built_in_function(), operator(), ParseDefinition.value(), reference()]
+  @behaviour Hoeg.ParseCombinator
+
+  @impl true
+  def combinator(_opts \\ []) do
+    [
+      whitespace(),
+      value(),
+      built_in_function(),
+      operator(),
+      ParseDefinition.combinator(),
+      reference()
+    ]
     |> choice()
     |> map({__MODULE__, :unwrap, []})
   end
@@ -20,7 +30,13 @@ defmodule Hoeg.ParseHelpers do
   end
 
   def value() do
-    [number_value(), string_value(), boolean_value(), ParseList.value(), ParseMap.value()]
+    [
+      number_value(),
+      string_value(),
+      boolean_value(),
+      ParseList.combinator(),
+      ParseMap.combinator()
+    ]
     |> choice()
     |> tag(:value)
   end
