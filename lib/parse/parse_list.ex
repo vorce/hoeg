@@ -6,7 +6,10 @@ defmodule Hoeg.ParseList do
 
   alias Hoeg.ParseHelpers
 
-  def value() do
+  @behaviour Hoeg.ParseCombinator
+
+  @impl true
+  def combinator(_opts \\ []) do
     [
       empty_list_value(),
       single_element_list_value(),
