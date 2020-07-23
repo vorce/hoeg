@@ -42,7 +42,7 @@ defmodule Hoeg.ParseMap do
     |> ignore(@map_end_marker)
   end
 
-  defp map_key_value(combinator \\ empty()) do
+  defp map_key_value(combinator) do
     combinator
     |> map_entry(:map_key)
     |> ignore(@map_divider)
@@ -56,7 +56,7 @@ defmodule Hoeg.ParseMap do
     |> map_key_value()
   end
 
-  defp map_entry(combinator \\ empty(), entry_component) do
+  defp map_entry(combinator, entry_component) do
     combinator
     |> parsec(:value)
     |> tag(entry_component)

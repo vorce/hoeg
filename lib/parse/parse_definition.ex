@@ -30,7 +30,7 @@ defmodule Hoeg.ParseDefinition do
     |> ignore(end_of_name_marker)
   end
 
-  defp definition_body(combinator \\ empty()) do
+  defp definition_body(combinator) do
     end_of_body_marker = ascii_char([?;])
 
     combinator

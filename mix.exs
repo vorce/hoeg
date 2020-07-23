@@ -6,6 +6,7 @@ defmodule Hoeg.MixProject do
       app: :hoeg,
       version: "0.2.0",
       elixir: "~> 1.6",
+      elixirc_options: [warnings_as_errors: true],
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
