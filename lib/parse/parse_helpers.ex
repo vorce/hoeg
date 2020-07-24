@@ -110,15 +110,9 @@ defmodule Hoeg.ParseHelpers do
   end
 
   def reference() do
-    end_marker = choice([whitespace(), ascii_char([?;]), eos()])
-
     whitespace()
     |> optional()
-    |> repeat(
-      lookahead_not(end_marker)
-      |> utf8_char([])
-    )
-    |> reduce({List, :to_string, []})
+    |> utf8_string([?a..?z, ?A..?Z, ?0..?9, ?-, ?_], min: 1)
     |> ignore(optional(whitespace()))
     |> unwrap_and_tag(:reference)
   end
