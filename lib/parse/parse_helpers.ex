@@ -49,19 +49,13 @@ defmodule Hoeg.ParseHelpers do
   end
 
   def string_value() do
-    marker = ascii_char([?"])
+    marker = [?"]
 
     marker
+    |> ascii_char()
     |> ignore()
-    |> repeat(
-      lookahead_not(marker)
-      |> choice([
-        ~S(\") |> string() |> replace(?"),
-        utf8_char([])
-      ])
-    )
-    |> reduce({List, :to_string, []})
-    |> ignore(marker)
+    |> utf8_string([{:not, hd(marker)}], min: 1)
+    |> ignore(ascii_char(marker))
   end
 
   def boolean_value() do
@@ -109,10 +103,11 @@ defmodule Hoeg.ParseHelpers do
     |> tag(name)
   end
 
+  @reference_range [?a..?z, ?A..?Z, ?0..?9, ?-, ?_]
   def reference() do
     whitespace()
     |> optional()
-    |> utf8_string([?a..?z, ?A..?Z, ?0..?9, ?-, ?_], min: 1)
+    |> utf8_string(@reference_range, min: 1)
     |> ignore(optional(whitespace()))
     |> unwrap_and_tag(:reference)
   end
