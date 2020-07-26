@@ -149,4 +149,10 @@ defmodule Hoeg.Builtin do
         )
     end
   end
+
+  def dup(state, _) do
+    with {:ok, val} <- Hoeg.State.peek(state) do
+      Hoeg.State.push(state, val)
+    end
+  end
 end

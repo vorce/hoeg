@@ -67,7 +67,7 @@ defmodule Hoeg.ParseHelpers do
   def string_to_bool("false"), do: false
 
   def built_in_function() do
-    choice([built_in(:print), built_in(:state), built_in(:cons)])
+    choice([built_in(:print), built_in(:state), built_in(:cons), built_in(:dup)])
   end
 
   defp built_in(name) when is_atom(name) do

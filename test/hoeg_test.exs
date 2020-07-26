@@ -259,10 +259,11 @@ defmodule HoegTest do
     end
   end
 
-  # describe "stack" do
-  #   test "pop" do
-  #     program = "1 pop"
-  #     assert Hoeg.eval(Hoeg.eval(program) == %Hoeg.State{elements: [[1]]})
-  #   end
-  # end
+  describe "stack" do
+    test "dup" do
+      program = "1 dup"
+      output = [1, 1]
+      assert Hoeg.eval(program) == %Hoeg.State{elements: output}
+    end
+  end
 end
