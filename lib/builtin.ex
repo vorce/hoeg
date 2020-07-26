@@ -155,4 +155,25 @@ defmodule Hoeg.Builtin do
       Hoeg.State.push(state, val)
     end
   end
+
+  def drop(state, _) do
+    with {:ok, {_val, state}} <- Hoeg.State.pop(state) do
+      state
+    end
+  end
+
+  def swap(state, _) do
+    with {:ok, {v1, state}} <- Hoeg.State.pop(state),
+         {:ok, {v2, state}} <- Hoeg.State.pop(state),
+         state <- Hoeg.State.push(state, v2) do
+      Hoeg.State.push(state, v1)
+    end
+  end
+
+  # defp dip(state, _) do
+  #   with {:ok, {v1, state}} <- Hoeg.State.pop(state),
+  #        {:ok, {v1, state}} <- Hoeg.State.pop(state) do
+
+  #   end
+  # end
 end

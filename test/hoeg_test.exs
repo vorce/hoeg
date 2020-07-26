@@ -265,5 +265,24 @@ defmodule HoegTest do
       output = [1, 1]
       assert Hoeg.eval(program) == %Hoeg.State{elements: output}
     end
+
+    test "drop" do
+      program = "1 drop"
+      output = []
+      assert Hoeg.eval(program) == %Hoeg.State{elements: output}
+    end
+
+    test "swap" do
+      program = "2 8 swap"
+      output = [8, 2]
+      assert Hoeg.eval(program) == %Hoeg.State{elements: output}
+    end
+
+    # test "dip" do
+    #   # https://docs.factorcode.org/content/word-dip,kernel.html
+    #   program = "10 20 30 / dip"
+    #   output = [0.5, 30]
+    #   assert Hoeg.eval(program) == %Hoeg.State{elements: output}
+    # end
   end
 end
